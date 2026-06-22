@@ -2,23 +2,20 @@ from music21 import converter, instrument, note, chord
 from basic_pitch.inference import predict
 from basic_pitch import ICASSP_2022_MODEL_PATH
 
-# path to the song 
-input = './music/Onra_-_The_Anthem_62447208.mp3'
-
-def audio_to_midi(input):
+def audio_to_midi(path, output_path):
     # converting
-    model_output, midi_data, note_events = predict(input, ICASSP_2022_MODEL_PATH)
+    model_output, midi_data, note_events = predict(path, ICASSP_2022_MODEL_PATH)
 
     # saving
-    midi_data.write("./music/output.mid")
-    print(f"MIDI was saved to ~/music/output.mid")
+    midi_data.write(output_path + "/your-song.mid")
+    print(f"MIDI was saved to {output_path}/your-song.mid")
 
-def makeNotes():
+def makeNotes(output_path):
     notes = []
-    file = "./music/output.mid"
+    mid_file = output_path + "/your-song.mid"
 
-    # get notes
-    midi = converter.parse(file)
+    # create notes
+    midi = converter.parse(mid_file)
     parts = instrument.partitionByInstrument(midi)
 
     if parts:
@@ -36,12 +33,17 @@ def makeNotes():
     print(notes)
 
     # parse MIDI and convert to .xml
-    score = converter.parse(file)
-    score.write('musicxml', fp='./music/notes.xml', format='xml')
+    score = converter.parse(mid_file)
+    score.write('musicxml', fp=output_path+'/notes.xml', format='xml')
+
+    print(f"Notes was saved to {output_path}/notes.xml")
 
 def main():
-    audio_to_midi(input)
-    makeNotes()
+    path = input('Enter path to your song: ')
+    output_path = input('Enter path to output folder: ')
+
+    audio_to_midi(path, output_path)
+    makeNotes(output_path)
 
 if __name__ == "__main__":
     main()
