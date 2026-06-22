@@ -35,6 +35,10 @@ def makeNotes():
     
     print(notes)
 
+    # parse MIDI and convert to .xml
+    score = converter.parse(file)
+    score.write('musicxml', fp='./music/notes.xml', format='xml')
+
 def main():
     audio_to_midi(input)
     makeNotes()
